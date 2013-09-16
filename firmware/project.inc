@@ -13,5 +13,3 @@ DRIVER	+=	stm32f10x_usart
 SRC_DIR := src
 CMSIS_DIR := cmsis
 STDPERIPH_DIR := stm32_periph
-
-SOURCES := hello.c

@@ -22,9 +22,9 @@ AS:=$(TOOLS_PATH)/$(TOOLS_PREFIX)as
 LD:=$(TOOLS_PATH)/$(TOOLS_PREFIX)ld
 OBJCOPY:=$(TOOLS_PATH)/$(TOOLS_PREFIX)objcopy
 
-OBJS += cmsis/core_cm3.o cmsis/system_stm32f10x.o
+OBJS += $(patsubst %.c,%.o, $(wildcard cmsis/*.c))
 OBJS += $(patsubst %,%.o, $(addprefix $(STDPERIPH_DIR)/src/, $(DRIVER)))
-OBJS += $(patsubst %.c,%.o, $(addprefix $(SRC_DIR)/, $(SOURCES)))
+OBJS += $(patsubst %.c,%.o, $(wildcard src/*.c))
 OBJS += $(patsubst %.s, %.o, $(STARTUP))
 
 .PHONY: clean
