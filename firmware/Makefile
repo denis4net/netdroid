@@ -1,6 +1,10 @@
+#
+# @author Denis Vashchuk
+#
+
+
 include project.inc
 
-TOOLS_PATH:=/home/denis/dev/arm/arm-2010q1/bin
 TOOLS_PREFIX:=arm-none-eabi-
 
 OUTFILE:=$(TARGET).elf
@@ -38,13 +42,15 @@ $(BINFILE): $(OBJS)
 	$(AS) $(ASLAGS) -o $@ $<
 
 clean:
-	rm -f $(OBJS) *.elf *.bin
+	rm -f $(OBJS) bin/*.elf bin/*.bin
 
 $(OUTFILE): $(OBJS)
 	$(CC) -T $(LAYOUT) -nostartfiles -nostdlib $(OBJS) -o bin/$@ 
 
 $(BINFILE): $(OUTFILE)
 	$(OBJCOPY) -Obinary bin/$(OUTFILE) bin/$(BINFILE)
+
+firmware: $(BINFILE)	
 	
 install: $(BINFILE)
 	 stm32flash -w bin/lab1.bin -g 0x0 /dev/ttyUSB0

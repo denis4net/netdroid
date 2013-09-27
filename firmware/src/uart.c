@@ -1,3 +1,10 @@
+/**
+ * @author Denis Vashchuk
+ * @brief Implementation of uart functions for shell
+ * @copyright BSUIR 2013
+ */
+
+
 #include "uart.h"
 
 void usart_send_byte(uint8_t byte)
@@ -30,10 +37,13 @@ void usart_init()
   gpio.GPIO_Pin = GPIO_Pin_10;
   GPIO_Init(GPIOA, &gpio);
 
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
   USART_InitTypeDef usart;
   /* Параметры по умолчанию: 9600 бод, 8 бит данных, 1 стоп-бит */
   USART_StructInit(&usart);
-  USART_Init(USART1, &usart);
-  USART_Cmd(USART1, ENABLE);
+  /* Установим скорост 115200 */
+  usart.USART_BaudRate=115200;
+  
+  USART_Init(USART2, &usart);
+  USART_Cmd(USART2, ENABLE);
 }

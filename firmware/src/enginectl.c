@@ -1,11 +1,18 @@
-#include "gpio.h"
+/**
+ * @author Denis Vashchuk
+ * @brief Implementation of engines control
+ * @copyright BSUIR 2013
+ */
 
 
-void gpio_init()
+#include "enginectl.h"
+
+
+void engine_init()
 {
-    /* Включаем тактирование порта C */
+    /* Включаем тактирование порта B */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-
+  
   GPIO_InitTypeDef gpio;
   gpio.GPIO_Mode = GPIO_Mode_Out_PP;
   gpio.GPIO_Pin = GPIO_Pin_0;

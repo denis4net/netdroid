@@ -1,3 +1,5 @@
+TOOLS_PATH:=/home/denis/dev/arm/arm-2010q1/bin
+
 TARGET:=webdroid
 
 DEFINES += STM32F10X_MD
