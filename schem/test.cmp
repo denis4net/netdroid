@@ -1,0 +1,122 @@
+Cmp-Mod V01 Created by CvPcb (2013-may-18)-stable date = Чт 26 сен 2013 21:44:53
+
+BeginCmp
+TimeStamp = /52384923;
+Reference = 8MHz1;
+ValeurCmp = CRYSTAL;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /52384A58;
+Reference = C1;
+ValeurCmp = 100nF;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /52384995;
+Reference = C2;
+ValeurCmp = 20pF;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /52384985;
+Reference = C3;
+ValeurCmp = 20pF;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /5241A550;
+Reference = JP_BOOT1;
+ValeurCmp = BREAKER;
+IdModule  = SIL-2;
+EndCmp
+
+BeginCmp
+TimeStamp = /52445DA3;
+Reference = JP_BOOT2;
+ValeurCmp = BREAKER;
+IdModule  = SIL-2;
+EndCmp
+
+BeginCmp
+TimeStamp = /52447375;
+Reference = P1;
+ValeurCmp = CONN_6;
+IdModule  = SIL-6;
+EndCmp
+
+BeginCmp
+TimeStamp = /52419944;
+Reference = R1;
+ValeurCmp = 330;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /5241A467;
+Reference = R2;
+ValeurCmp = 10k;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /52445DD4;
+Reference = R3;
+ValeurCmp = 10k;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /523EA337;
+Reference = R4;
+ValeurCmp = 510;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /52445DE3;
+Reference = R5;
+ValeurCmp = 510;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /52384A97;
+Reference = reset1;
+ValeurCmp = SW_PUSH;
+IdModule  = SMD403;
+EndCmp
+
+BeginCmp
+TimeStamp = /52447629;
+Reference = SWD1;
+ValeurCmp = CONN_3;
+IdModule  = SM2010;
+EndCmp
+
+BeginCmp
+TimeStamp = /52384296;
+Reference = U1;
+ValeurCmp = STM32F103C8;
+IdModule  = QFN48;
+EndCmp
+
+BeginCmp
+TimeStamp = /52446EDB;
+Reference = uart1;
+ValeurCmp = CONN1;
+IdModule  = SIL-3;
+EndCmp
+
+BeginCmp
+TimeStamp = /52446EEA;
+Reference = uart2;
+ValeurCmp = CONN2;
+IdModule  = SIL-3;
+EndCmp
+
+EndListe
