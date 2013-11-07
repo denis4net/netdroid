@@ -17,11 +17,12 @@ INCLUDES += $(STDPERIPH_DIR)/inc
 
 CFLAGS:=-mcpu=cortex-m3 -Wall $(INCLUDE) $(addprefix -D, $(DEFINES)) \
 	$(addprefix -I, $(INCLUDES)) -fno-common -O0 -mthumb --std=gnu99 \
-	"-Dassert_param(expr) ((void)0);"
+	"-Dassert_param(expr) ((void)0);" -g
 	
 ASFLAGS:= -ahls -mapcs-32
 
 CC:=$(TOOLS_PATH)/$(TOOLS_PREFIX)gcc
+SIZE:=$(TOOLS_PATH)/$(TOOLS_PREFIX)size
 AS:=$(TOOLS_PATH)/$(TOOLS_PREFIX)as
 LD:=$(TOOLS_PATH)/$(TOOLS_PREFIX)ld
 OBJCOPY:=$(TOOLS_PATH)/$(TOOLS_PREFIX)objcopy
@@ -45,7 +46,8 @@ clean:
 	rm -f $(OBJS) bin/*.elf bin/*.bin
 
 $(OUTFILE): $(OBJS)
-	$(CC) -T $(LAYOUT) -nostartfiles -nostdlib $(OBJS) -o bin/$@ 
+	$(CC) -T $(LAYOUT) -nostartfiles -nostdlib$(OBJS) -o bin/$@ 
+	$(SIZE)  -B bin/$@ 
 
 $(BINFILE): $(OUTFILE)
 	$(OBJCOPY) -Obinary bin/$(OUTFILE) bin/$(BINFILE)
@@ -54,3 +56,5 @@ firmware: $(BINFILE)
 	
 install: $(BINFILE)
 	 stm32flash -w bin/lab1.bin -g 0x0 /dev/ttyUSB0
+
+rebuild: clean firmware

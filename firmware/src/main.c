@@ -1,3 +1,4 @@
+
 /**
  * @author Denis Vashchuk
  * @brief BSUIR web droid neuraxis
@@ -5,41 +6,50 @@
  */
 
 #include <stm32f10x.h>
+
 #include "shell.h"
 #include "uart.h"
 #include "enginectl.h"
 #include "servoctl.h"
+#include "cmd_runner.h"
 
-void delay()
+void delay(uint32_t ms)
 {
-  volatile int j;
-    for(j=0; j<1600000; j++)
-      __NOP();
+        volatile uint32_t nCount;
+        RCC_ClocksTypeDef RCC_Clocks;
+	RCC_GetClocksFreq (&RCC_Clocks);
+
+        nCount=(RCC_Clocks.HCLK_Frequency/10000)*ms;
+        for (; nCount!=0; nCount--) 
+		__NOP;
 }
 
-int command_handler(const char* cmd)
-{
-  #ifdef DEBUG
-    usart_send_str(cmd);
-  #endif
-  return 0;
+void led_init()
+{  
+	GPIO_InitTypeDef gpio_b;
+	gpio_b.GPIO_Mode = GPIO_Mode_Out_PP;
+	gpio_b.GPIO_Pin = GPIO_Pin_0;
+	gpio_b.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_Init(GPIOB, &gpio_b);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 }
 
 int main()
 { 
-  /* init and run shell in background, run on iterrupts */
-  shell_init(command_handler);
-  /* init engines */
-  engine_init();
-  /* init servo drives */
-  servo_init();
-  //TODO: led blinking
-  
-  while (1) 
-  {
-    GPIO_SetBits(GPIOB, GPIO_Pin_0);
-    delay();
-    GPIO_ResetBits(GPIOB, GPIO_Pin_0);
-    delay();
-  }
+	/* init engines */
+	engine_init();
+	/* init servo drives */
+	servo_init();
+	/* init led */
+	led_init();
+	/* init and run shell in background, run on iterrupts */
+	shell_init(cmd_handler);
+	
+	while (1) 
+	{
+		GPIO_SetBits(GPIOB, GPIO_Pin_0);
+		delay(500);
+		GPIO_ResetBits(GPIOB, GPIO_Pin_0);		
+		delay(500);
+	}
 }
