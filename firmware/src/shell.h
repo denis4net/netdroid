@@ -2,12 +2,11 @@
 #define SHELL_H
 
 /*size of command, uart rx buffer size */
-#define CMD_SIZE 1024
+#define CMD_SIZE 64
 
 /*init shell*/
-int shell_init( int  (*handler)(const char*));
+int shell_init();
 
-/* byte received*/
-void usart_irq_handler();
+void shell_run();
 
 #endif

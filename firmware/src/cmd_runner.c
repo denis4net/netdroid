@@ -2,8 +2,8 @@
 
 int cmd_handler(const char* cmd)
 {
-  #ifdef DEBUG
+#ifdef DEBUG
     usart_send_str(cmd);
-   #endif
-  return 0;
+#endif
+    return 0;
 }

@@ -1,8 +1,6 @@
 #
 # @author Denis Vashchuk
 #
-
-
 include project.inc
 
 TOOLS_PREFIX:=arm-none-eabi-
@@ -46,7 +44,7 @@ clean:
 	rm -f $(OBJS) bin/*.elf bin/*.bin
 
 $(OUTFILE): $(OBJS)
-	$(CC) -T $(LAYOUT) -nostartfiles -nostdlib$(OBJS) -o bin/$@ 
+	$(CC) -T $(LAYOUT) -nostartfiles -nostdlib -nodefaultlibs $(OBJS) -o bin/$@ 
 	$(SIZE)  -B bin/$@ 
 
 $(BINFILE): $(OUTFILE)
