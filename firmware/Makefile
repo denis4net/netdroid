@@ -28,6 +28,7 @@ OBJCOPY:=$(TOOLS_PATH)/$(TOOLS_PREFIX)objcopy
 OBJS += $(patsubst %.c,%.o, $(wildcard cmsis/*.c))
 OBJS += $(patsubst %,%.o, $(addprefix $(STDPERIPH_DIR)/src/, $(DRIVER)))
 OBJS += $(patsubst %.c,%.o, $(wildcard src/*.c))
+OBJS += $(patsubst %.c,%.o, $(wildcard stdlib/*.c))
 OBJS += $(patsubst %.s, %.o, $(STARTUP))
 
 .PHONY: clean
@@ -54,5 +55,7 @@ firmware: $(BINFILE)
 	
 install: $(BINFILE)
 	 stm32flash -w bin/lab1.bin -g 0x0 /dev/ttyUSB0
+
+all: rebuild
 
 rebuild: clean firmware

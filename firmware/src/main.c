@@ -6,12 +6,10 @@
  */
 
 #include <stm32f10x.h>
-
+#include <stdint.h>
 #include "shell.h"
-#include "uart.h"
 #include "enginectl.h"
 #include "servoctl.h"
-#include "cmd_runner.h"
 
 void delay(uint32_t ms)
 {
@@ -24,15 +22,6 @@ void delay(uint32_t ms)
         __NOP;
 }
 
-void led_init()
-{
-    GPIO_InitTypeDef gpio_b;
-    gpio_b.GPIO_Mode = GPIO_Mode_Out_PP;
-    gpio_b.GPIO_Pin = GPIO_Pin_0;
-    gpio_b.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_Init(GPIOB, &gpio_b);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-}
 
 int main()
 {
@@ -40,8 +29,6 @@ int main()
     engine_init();
     /* init servo drives */
     servo_init();
-    /* init led */
-    led_init();
     /* run shell loop */
     shell_run();
 }

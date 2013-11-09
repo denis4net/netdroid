@@ -11,6 +11,7 @@ STARTUP	:=	startup_stm32f10x_md.s
 DRIVER	+=	stm32f10x_gpio
 DRIVER	+=	stm32f10x_rcc
 DRIVER	+=	stm32f10x_usart
+DRIVER += stm32f10x_tim
 DRIVER += misc
 
 SRC_DIR := src

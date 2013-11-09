@@ -1,4 +1,29 @@
 #include <stdlib.h>
+#include <stdarg.h>
+
+
+int get_args(const char* text, int count, ...)
+{
+	va_list alist;
+	va_start(alist, count);
+	
+	int i;
+	/* find space char */
+	for(i=0; text[i]!=0 && text[i]!=' ' && text[i]!='\t'; i++);
+	/* bias index i to next char - first argument */
+	i++;
+	/*extracting int arguments */
+	for(int j=0; j<count; j++) {
+		int soff = i;
+		for(; text[i]!=0 && text[i] >= '0' && text[i] <= '9'; i++);
+		int* p_arg = va_arg(alist, int*);
+		*p_arg = atoi(text+soff);
+		/* bias index i to next char - next argument */
+		i++;
+	}
+	
+	return count;
+}
 
 void strcpy(char* __dest, const char* __src)
 {
