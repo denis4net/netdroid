@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by PcbNew date = 07.11.2013 13:25:30
+Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11.11.2013 23:00:48
 
 BeginCmp
 TimeStamp = /52384923;
@@ -40,6 +40,41 @@ TimeStamp = /52384985;
 Reference = C3;
 ValeurCmp = 20pF;
 IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /528124CE;
+Reference = C4;
+ValeurCmp = 100nF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /528124C8;
+Reference = C5;
+ValeurCmp = 100nF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /528124C2;
+Reference = C6;
+ValeurCmp = 100nF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /528124D4;
+Reference = C7;
+ValeurCmp = 100nF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /528133E0;
+Reference = C9;
+ValeurCmp = 1uF;
+IdModule  = SMDHD/VF;
 EndCmp
 
 BeginCmp
@@ -239,10 +274,80 @@ IdModule  = SM0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /525D0A55;
+TimeStamp = /52812A20;
+Reference = P1;
+ValeurCmp = CONN_1;
+IdModule  = SIL-1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52812A33;
+Reference = P2;
+ValeurCmp = CONN_1;
+IdModule  = SIL-1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52812A3F;
+Reference = P3;
+ValeurCmp = CONN_1;
+IdModule  = SIL-1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52812A4B;
+Reference = P4;
+ValeurCmp = CONN_1;
+IdModule  = SIL-1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52812ED5;
+Reference = P5;
+ValeurCmp = CONN_1;
+IdModule  = SIL-1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52812EED;
+Reference = P6;
+ValeurCmp = CONN_1;
+IdModule  = SIL-1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52812F24;
+Reference = P7;
+ValeurCmp = CONN_1;
+IdModule  = SIL-1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52813A73;
+Reference = P8;
+ValeurCmp = CONN_1;
+IdModule  = SIL-1;
+EndCmp
+
+BeginCmp
+TimeStamp = /52811EAA;
 Reference = PSWD1;
-ValeurCmp = CONN_4;
-IdModule  = SIL-4;
+ValeurCmp = CONN_2;
+IdModule  = SIL-2;
+EndCmp
+
+BeginCmp
+TimeStamp = /52811E53;
+Reference = PWR1;
+ValeurCmp = CONN_2;
+IdModule  = SIL-2;
+EndCmp
+
+BeginCmp
+TimeStamp = /52811E7D;
+Reference = PWR2;
+ValeurCmp = CONN_3;
+IdModule  = SIL-3;
 EndCmp
 
 BeginCmp
@@ -302,15 +407,8 @@ IdModule  = SIL-2;
 EndCmp
 
 BeginCmp
-TimeStamp = /525D3652;
-Reference = SERVO1;
-ValeurCmp = CONN_4;
-IdModule  = SIL-4;
-EndCmp
-
-BeginCmp
 TimeStamp = /525D363D;
-Reference = SERVO2;
+Reference = SERVO1;
 ValeurCmp = CONN_4;
 IdModule  = SIL-4;
 EndCmp
@@ -323,17 +421,17 @@ IdModule  = LQFP48;
 EndCmp
 
 BeginCmp
-TimeStamp = /525CFE58;
+TimeStamp = /528120C3;
 Reference = USART1;
-ValeurCmp = CONN_4;
-IdModule  = SIL-4;
+ValeurCmp = CONN_2;
+IdModule  = SIL-2;
 EndCmp
 
 BeginCmp
-TimeStamp = /525CFE49;
+TimeStamp = /5281222D;
 Reference = USART2;
-ValeurCmp = CONN_4;
-IdModule  = SIL-4;
+ValeurCmp = CONN_2;
+IdModule  = SIL-2;
 EndCmp
 
 EndListe
