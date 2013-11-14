@@ -31,7 +31,7 @@ void engine_init()
 
 	GPIO_InitTypeDef gpio_b;
 	gpio_b.GPIO_Mode = GPIO_Mode_Out_PP;
-	gpio_b.GPIO_Pin = GPIO_Pin_0;
+	gpio_b.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
 	gpio_b.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOB, &gpio_b);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
@@ -48,7 +48,7 @@ void engine_init()
 	TIM_OCInitTypeDef timer_oconfig;
 	timer_oconfig.TIM_OCMode = TIM_OCMode_PWM1;
 	timer_oconfig.TIM_OutputState = TIM_OutputState_Enable;
-	timer_oconfig.TIM_Pulse = 0;
+	timer_oconfig.TIM_Pulse = 30;
 	timer_oconfig.TIM_OCPolarity = TIM_OCPolarity_High;
 
 	TIM_OC1Init(TIM3, &timer_oconfig);
@@ -64,6 +64,8 @@ void engine_init()
 	TIM_ARRPreloadConfig(TIM3, ENABLE);
 	TIM_Cmd(TIM3, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+
+
 }
 
 /**
