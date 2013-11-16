@@ -1,10 +1,10 @@
-Cmp-Mod V01 Created by CvPcb (2013-07-07 BZR 4022)-stable date = 11.11.2013 23:00:48
+Cmp-Mod V01 Created by PcbNew date = 16.11.2013 10:35:26
 
 BeginCmp
 TimeStamp = /52384923;
 Reference = 8MHz1;
 ValeurCmp = CRYSTAL;
-IdModule  = SIL-2;
+IdModule  = HC-49V;
 EndCmp
 
 BeginCmp
