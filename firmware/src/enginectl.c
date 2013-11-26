@@ -15,23 +15,35 @@
 #include <stm32f10x_tim.h>
 
 #define PWM_PERIOD 100
+#define ENGINE_SPEED(x) (PWM_PERIOD-x-1)
+#define ENGINE_STOP	PWM_PERIOD-1
+
+extern void delay(uint32_t ms);
 
 /**
  * Init engine control GPIOs
+ *
+ * Channel (Forward)	|		Channel (Back)	|	Engine #	|	Description
+ * _________________|_______________________|_______________|______________
+ * TIM4_CH1 (PB6)	|	 	TIM4_CH2 (PB7)	|	 	ENG1	|	FRONT_RIGHT
+ * TIM4_CH3 (PB8)	|		TIM4_CH4 (PB9)	|		ENG2	|	FRONT_LEFT
+ * TIM3_CH1 (PA6)	|		TIM3_CH2 (PA7)	|		ENG3	|	BACK_RIGHT
+ * TIM3_CH3 (PB0)	|		TIM3_CH4 (PB1)	|		ENG4	|	BACK_LEFT
+ *
  */
 void engine_init()
 {
 	/* Enable gpio pins for engine */
 	GPIO_InitTypeDef gpio_a;
-	gpio_a.GPIO_Mode = GPIO_Mode_Out_PP;
+	gpio_a.GPIO_Mode = GPIO_Mode_AF_PP;
 	gpio_a.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 	gpio_a.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOA, &gpio_a);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
 	GPIO_InitTypeDef gpio_b;
-	gpio_b.GPIO_Mode = GPIO_Mode_Out_PP;
-	gpio_b.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1;
+	gpio_b.GPIO_Mode = GPIO_Mode_AF_PP;
+	gpio_b.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
 	gpio_b.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOB, &gpio_b);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
@@ -42,19 +54,31 @@ void engine_init()
 	timer_config.TIM_ClockDivision=0;
 	timer_config.TIM_Prescaler = 0;
 	timer_config.TIM_Period = PWM_PERIOD-1;
-	TIM_TimeBaseInit(TIM3, &timer_config);
 
+	TIM_TimeBaseInit(TIM3, &timer_config);
+	TIM_TimeBaseInit(TIM4, &timer_config);
 
 	TIM_OCInitTypeDef timer_oconfig;
 	timer_oconfig.TIM_OCMode = TIM_OCMode_PWM1;
 	timer_oconfig.TIM_OutputState = TIM_OutputState_Enable;
-	timer_oconfig.TIM_Pulse = 30;
+	timer_oconfig.TIM_Pulse = PWM_PERIOD-1;
 	timer_oconfig.TIM_OCPolarity = TIM_OCPolarity_High;
 
+	//Timer 3
 	TIM_OC1Init(TIM3, &timer_oconfig);
 	TIM_OC2Init(TIM3, &timer_oconfig);
 	TIM_OC3Init(TIM3, &timer_oconfig);
 	TIM_OC4Init(TIM3, &timer_oconfig);
+	//Timer 4
+	TIM_OC1Init(TIM4, &timer_oconfig);
+	TIM_OC2Init(TIM4, &timer_oconfig);
+	TIM_OC3Init(TIM4, &timer_oconfig);
+	TIM_OC4Init(TIM4, &timer_oconfig);
+
+	TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
+	TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Enable);
+	TIM_OC3PreloadConfig(TIM3, TIM_OCPreload_Enable);
+	TIM_OC4PreloadConfig(TIM3, TIM_OCPreload_Enable);
 
 	TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Enable);
 	TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Enable);
@@ -62,10 +86,13 @@ void engine_init()
 	TIM_OC4PreloadConfig(TIM3, TIM_OCPreload_Enable);
 
 	TIM_ARRPreloadConfig(TIM3, ENABLE);
+	TIM_ARRPreloadConfig(TIM4, ENABLE);
+
 	TIM_Cmd(TIM3, ENABLE);
+	TIM_Cmd(TIM4, ENABLE);
+
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-
-
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 }
 
 /**
@@ -77,24 +104,39 @@ void engine_init()
  * @param time time in ms
  * @param speed max value PWM_PERIOD
  */
-void engine_go_forward(int time, int speed)
+void engine_go_backward(int time, int speed)
 {
-	TIM3->CCR1 = speed;
-	TIM3->CCR2 = speed;
-	TIM3->CCR3 = speed;
-	TIM3->CCR4 = speed;
+	TIM3->CCR1 = ENGINE_SPEED(speed);
+	TIM3->CCR3 = ENGINE_SPEED(speed);
+	TIM4->CCR2 = ENGINE_SPEED(speed);
+	TIM4->CCR4 = ENGINE_SPEED(speed);
+
+	delay(time);
+
+	TIM3->CCR1 = ENGINE_STOP;
+	TIM3->CCR3 = ENGINE_STOP;
+	TIM4->CCR2 = ENGINE_STOP;
+	TIM4->CCR4 = ENGINE_STOP;
 }
 
-void engine_go_back(int time, int speed)
+void engine_go_forward(int time, int speed)
 {
-	TIM3->CCR1 = speed;
-	TIM3->CCR2 = speed;
-	TIM3->CCR3 = speed;
-	TIM3->CCR4 = speed;
+	TIM3->CCR2 = ENGINE_SPEED(speed);
+	TIM3->CCR3 = ENGINE_SPEED(speed);
+	TIM4->CCR1 = ENGINE_SPEED(speed);
+	TIM4->CCR3 = ENGINE_SPEED(speed);
+
+	delay(time);
+
+	TIM3->CCR1 = ENGINE_STOP;
+	TIM3->CCR3 = ENGINE_STOP;
+	TIM4->CCR1 = ENGINE_STOP;
+	TIM4->CCR3 = ENGINE_STOP;
 }
 
 void engine_turn_right_forward(int angle)
 {
+
 }
 
 void engine_turn_left_forward(int angle)
@@ -102,10 +144,12 @@ void engine_turn_left_forward(int angle)
 
 }
 
-void engine_turn_right_back(int angle)
+void engine_turn_right_backward(int angle)
 {
+
 }
 
-void engine_turn_left_back(int angle)
+void engine_turn_left_backward(int angle)
 {
+
 }

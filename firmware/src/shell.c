@@ -11,10 +11,6 @@
 #include "queue.h"
 #include "cmd.h"
 
-extern int sscanf(const char *str, const char *fmt, ...);
-extern int sprintf(char **out, const char *format, ...);
-
-static int (*cmd_handler)(const char* cmd);
 static queue_t command_queue;
 
 int shell_init()

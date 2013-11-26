@@ -6,12 +6,16 @@
 extern int get_args(const char* text, int count, ...);
 static cmd_status_t cmd_help(const char* );
 static cmd_status_t cmd_go_forward(const char* );
-static cmd_status_t cmd_go_back(const char* );
+static cmd_status_t cmd_go_backward(const char* );
+static cmd_status_t cmd_turn_right(const char*);
+static cmd_status_t cmd_turn_left(const char*);
 
 cmd_t commands[] = {
-	{ "help", "show help message", cmd_help },
-	{"go_forward", "<time (ms)> <speed 0..100>", cmd_go_forward },
-	{"go_back", "<time (ms)> <speed 0..100>", cmd_go_back }
+		{ "help", "show help message", cmd_help },
+		{"go_forward", "<time (ms)> <speed 0..100>", cmd_go_forward },
+		{"go_backward", "<time (ms)> <speed 0..100>", cmd_go_backward },
+		{"turn_right", "<angle> <dir 0|1>", cmd_turn_right },
+		{"turn_left", "<angle> <dir 0|1>", cmd_turn_left }
 };
 
 #define COMMAND_SIZE sizeof(commands)/sizeof(cmd_t)
@@ -31,7 +35,7 @@ static cmd_status_t cmd_help(const char* command)
 		usart_send_str(commands[i].description);
 		usart_send_str("\n\r");
 	}
-	
+
 	usart_send_str("\n\r");
 	return CMD_SUCCESSFUL;
 }
@@ -45,13 +49,46 @@ cmd_status_t cmd_go_forward(const char* command )
 	return CMD_SUCCESSFUL;
 }
 
-
-cmd_status_t cmd_go_back(const char*command )
+cmd_status_t cmd_go_backward(const char*command )
 {
+	int speed, time;
+	char cmd[16];
+	get_args(command,  2, &time, &speed);
+	engine_go_backward(time, speed);
 	return CMD_SUCCESSFUL;
 }
 
+cmd_status_t cmd_turn_right(const char* command)
+{
+	int angle, dir;
+	char cmd[16];
+	get_args(command,  2, &angle, &dir);
 
+	if(dir) {
+		engine_turn_right_forward(angle);
+	}
+	else {
+		engine_turn_right_backward(angle);
+	}
+
+	return CMD_SUCCESSFUL;
+}
+
+cmd_status_t cmd_turn_left(const char* command)
+{
+	int angle, dir;
+	char cmd[16];
+	get_args(command,  2, &angle, &dir);
+
+	if(dir) {
+		engine_turn_left_forward(angle);
+	}
+	else {
+		engine_turn_left_backward(angle);
+	}
+
+	return CMD_SUCCESSFUL;
+}
 
 static int _cmd_cmp(const char* full_command, const char* command_name)
 {
@@ -61,7 +98,7 @@ static int _cmd_cmp(const char* full_command, const char* command_name)
 		if(full_command[i]-command_name[i]!=0)
 			return full_command[i]-command_name[i];
 	}
-	
+
 	return 0;
 }
 
@@ -74,8 +111,8 @@ static int _cmd_cmp(const char* full_command, const char* command_name)
 cmd_status_t cmd_run(const char* command)
 {
 	for(int i=0; i<COMMAND_SIZE; i++) {
-				if ( !_cmd_cmp( command, commands[i].name))
-					return commands[i].function(command);
+		if ( !_cmd_cmp( command, commands[i].name))
+			return commands[i].function(command);
 	}
 	return CMD_UNDEFINED;
 }
@@ -87,8 +124,8 @@ cmd_status_t cmd_run(const char* command)
 int cmd_check(const char* command)
 {
 	for(int i=0; i<COMMAND_SIZE; i++) {
-				if ( !_cmd_cmp(command, commands[i].name))
-					return 1;
+		if ( !_cmd_cmp(command, commands[i].name))
+			return 1;
 	}	
 	return 0;
 }
