@@ -15,8 +15,8 @@
 #include <stm32f10x_tim.h>
 
 #define PWM_PERIOD 100
-#define ENGINE_SPEED(x) (PWM_PERIOD-x-1)
-#define ENGINE_STOP	PWM_PERIOD-1
+#define ENGINE_SPEED(x) (x-1)
+#define ENGINE_STOP	0
 
 extern void delay(uint32_t ms);
 
@@ -61,7 +61,7 @@ void engine_init()
 	TIM_OCInitTypeDef timer_oconfig;
 	timer_oconfig.TIM_OCMode = TIM_OCMode_PWM1;
 	timer_oconfig.TIM_OutputState = TIM_OutputState_Enable;
-	timer_oconfig.TIM_Pulse = PWM_PERIOD-1;
+	timer_oconfig.TIM_Pulse = ENGINE_STOP;
 	timer_oconfig.TIM_OCPolarity = TIM_OCPolarity_High;
 
 	//Timer 3
@@ -104,35 +104,51 @@ void engine_init()
  * @param time time in ms
  * @param speed max value PWM_PERIOD
  */
-void engine_go_backward(int time, int speed)
+void engine_go_forward(int time_ms, int speed_value)
 {
-	TIM3->CCR1 = ENGINE_SPEED(speed);
-	TIM3->CCR3 = ENGINE_SPEED(speed);
-	TIM4->CCR2 = ENGINE_SPEED(speed);
-	TIM4->CCR4 = ENGINE_SPEED(speed);
+	TIM3->CCR1 = ENGINE_SPEED(speed_value);
+	TIM3->CCR3 = ENGINE_SPEED(speed_value);
+	TIM4->CCR1 = ENGINE_SPEED(speed_value);
+	TIM4->CCR3 = ENGINE_SPEED(speed_value);
 
-	delay(time);
+	delay(time_ms);
 
+	engine_stop();
+}
+
+void engine_go_backward(int time_ms, int speed_value)
+{
+	TIM3->CCR2 = ENGINE_SPEED(speed_value);
+	TIM3->CCR4 = ENGINE_SPEED(speed_value);
+	TIM4->CCR2 = ENGINE_SPEED(speed_value);
+	TIM4->CCR4 = ENGINE_SPEED(speed_value);
+
+	delay(time_ms);
+
+	engine_stop();
+}
+
+void engine_go_forward_continuously(int speed_value)
+{
+	TIM3->CCR1 = ENGINE_SPEED(speed_value);
+	TIM3->CCR3 = ENGINE_SPEED(speed_value);
+	TIM4->CCR1 = ENGINE_SPEED(speed_value);
+	TIM4->CCR3 = ENGINE_SPEED(speed_value);
+}
+
+void engine_stop()
+{
 	TIM3->CCR1 = ENGINE_STOP;
+	TIM3->CCR2 = ENGINE_STOP;
 	TIM3->CCR3 = ENGINE_STOP;
+	TIM3->CCR4 = ENGINE_STOP;
+
+	TIM4->CCR1 = ENGINE_STOP;
 	TIM4->CCR2 = ENGINE_STOP;
+	TIM4->CCR3 = ENGINE_STOP;
 	TIM4->CCR4 = ENGINE_STOP;
 }
 
-void engine_go_forward(int time, int speed)
-{
-	TIM3->CCR2 = ENGINE_SPEED(speed);
-	TIM3->CCR3 = ENGINE_SPEED(speed);
-	TIM4->CCR1 = ENGINE_SPEED(speed);
-	TIM4->CCR3 = ENGINE_SPEED(speed);
-
-	delay(time);
-
-	TIM3->CCR1 = ENGINE_STOP;
-	TIM3->CCR3 = ENGINE_STOP;
-	TIM4->CCR1 = ENGINE_STOP;
-	TIM4->CCR3 = ENGINE_STOP;
-}
 
 void engine_turn_right_forward(int angle)
 {

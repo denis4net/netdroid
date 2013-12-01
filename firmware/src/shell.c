@@ -73,17 +73,26 @@ void  USART2_IRQHandler()
 void shell_run()
 {
 	char local_command[CMD_SIZE];
+	int pwm_value=0;
+
 	queue_init(&command_queue);
 	shell_init();
 	usart_send_str(">");
 
+
 	while(1) {
+
 		if( !queue_is_empty(&command_queue) ) {
 			strcpy(local_command, queue_dequeue(&command_queue));
 			cmd_run(local_command);
 		}
-		else
-			__NOP();
+		else {
+			test(pwm_value++);
+			if(pwm_value==100)
+				pwm_value=0;
+
+			delay(10);
+		}
 	}
 }
 

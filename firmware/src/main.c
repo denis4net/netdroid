@@ -10,6 +10,8 @@
 #include "shell.h"
 #include "enginectl.h"
 #include "servoctl.h"
+#include "test.h"
+
 
 void delay(uint32_t ms)
 {
@@ -29,6 +31,8 @@ int main()
     engine_init();
     /* init servo drives */
     servo_init();
+    /* test init */
+    test_init();
     /* run shell loop */
     shell_run();
 }
