@@ -18,7 +18,7 @@ cmd_t commands[] = {
 		{ "help", "show help message", cmd_help },
 		{"go_forward", "<time (ms)> <speed 0..100>", cmd_go_forward },
 		{"go_backward", "<time (ms)> <speed 0..100>", cmd_go_backward },
-		{"go_forward_cont", "<speed 0..100>", cmd_go_forward_continuously },
+		{"go_cont", "<speed 0..100>", cmd_go_forward_continuously },
 		{"engines_stop", "stop all engines", cmd_engines_stop },
 		{"turn_right", "<angle> <dir 0|1>", cmd_turn_right },
 		{"turn_left", "<angle> <dir 0|1>", cmd_turn_left },

@@ -2,18 +2,15 @@ TOOLS_PATH:=/home/denis/dev/arm/arm-2010q1/bin
 
 TARGET:=webdroid
 
-DEFINES += STM32F10X_MD_VL
+DEFINES += STM32F10X_MD
 DEFINES += USE_SRDPERIPH_DRIVER
 DEFINES += VECT_TABLE_FLASH
-DEBUG	:= -gdwarf-2
-STARTUP	:=	startup_stm32f10x_md_vl.s
+
+STARTUP	:=	startup_stm32f10x_md.s
 
 DRIVER	+=	stm32f10x_gpio
 DRIVER	+=	stm32f10x_rcc
-DRIVER	+=	stm32f10x_usart
-DRIVER 	+= 	stm32f10x_tim
-DRIVER 	+= 	misc
 
-SRC_DIR 	:= 		src
-CMSIS_DIR 	:= 	cmsis
+SRC_DIR := src
+CMSIS_DIR := cmsis
 STDPERIPH_DIR := stm32_periph

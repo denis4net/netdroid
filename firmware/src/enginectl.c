@@ -25,10 +25,10 @@ extern void delay(uint32_t ms);
  *
  * Channel (Forward)	|		Channel (Back)	|	Engine #	|	Description
  * _________________|_______________________|_______________|______________
- * TIM4_CH1 (PB6)	|	 	TIM4_CH2 (PB7)	|	 	ENG1	|	FRONT_RIGHT
- * TIM4_CH3 (PB8)	|		TIM4_CH4 (PB9)	|		ENG2	|	FRONT_LEFT
- * TIM3_CH1 (PA6)	|		TIM3_CH2 (PA7)	|		ENG3	|	BACK_RIGHT
- * TIM3_CH3 (PB0)	|		TIM3_CH4 (PB1)	|		ENG4	|	BACK_LEFT
+ * TIM4_CH1 (PB6)	|	 	TIM4_CH2 (PB7)	|	 	ENG1	|	Front left
+ * TIM4_CH3 (PB8)	|		TIM4_CH4 (PB9)	|		ENG2	|	Front right
+ * TIM3_CH1 (PA6)	|		TIM3_CH2 (PA7)	|		ENG3	|	Back right
+ * TIM3_CH3 (PB0)	|		TIM3_CH4 (PB1)	|		ENG4	|	Back left
  *
  */
 void engine_init()

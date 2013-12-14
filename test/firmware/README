@@ -1,0 +1,13 @@
+Commands:
+  go fw <speed> <time>
+  go bw <speed> <time>
+    speed:	0..100
+    time		time in ms
+    
+    
+  turn right <fw|bw> <deg>
+  turn left  <fw|bw> <deg>
+    fw - turn forward
+    bw - turn backward
+    deg - angle
+  

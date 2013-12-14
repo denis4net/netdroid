@@ -27,12 +27,8 @@ void delay(uint32_t ms)
 
 int main()
 {
-    /* init engines */
     engine_init();
-    /* init servo drives */
-    servo_init();
-    /* test init */
+	servo_init();
     test_init();
-    /* run shell loop */
     shell_run();
 }
