@@ -6,6 +6,10 @@
 
 #include "servoctl.h"
 
+
+/**
+ * For bright future =)
+ */
 void servo_init()
 {
 

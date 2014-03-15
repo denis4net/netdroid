@@ -1,28 +1,14 @@
 /**
+ * @file enginectl.c
  * @author Denis Vashchuk
  * @brief Implementation of PWM engines control
  * @copyright BSUIR 2013
  *
- * Due to schematic:
- * 	PB8, PB9 - left front engine ctl | TIM4_CH3. TIM4_CH4
- * 	PB0, PB1 - right front engine ctl | TIM3_CH3, TIM3_CH4
- * 	PB6, PB7 -  left back engine ctl 
- * 	PA6, PA7 - right back engine ctl
+ * <h2>Engines placement on a board.</h2>
+ * @image html ../../images/neuraxis_pwm.png
  */
 
-
-#include "enginectl.h"
-#include <stm32f10x_tim.h>
-
-#define PWM_PERIOD 100
-#define ENGINE_SPEED(x) (x-1)
-#define ENGINE_STOP	0
-
-extern void delay(uint32_t ms);
-
-/**
- * Init engine control GPIOs
- *
+ /*
  * Channel (Forward)	|		Channel (Back)	|	Engine #	|	Description
  * _________________|_______________________|_______________|______________
  * TIM4_CH1 (PB6)	|	 	TIM4_CH2 (PB7)	|	 	ENG1	|	Front left
@@ -31,22 +17,43 @@ extern void delay(uint32_t ms);
  * TIM3_CH3 (PB0)	|		TIM3_CH4 (PB1)	|		ENG4	|	Back left
  *
  */
+
+
+#include "enginectl.h"
+#include "led.h"
+#include <stm32f10x_tim.h>
+
+#define PWM_PERIOD 100
+#define ENGINE_SPEED(x) (x-1)
+#define ENGINE_STOP	0
+
+
+
+extern void delay(uint32_t ms);
+
+/**
+ * @brief Init GPIO, PWM for engines control
+ */
 void engine_init()
 {
+
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+
 	/* Enable gpio pins for engine */
 	GPIO_InitTypeDef gpio_a;
 	gpio_a.GPIO_Mode = GPIO_Mode_AF_PP;
 	gpio_a.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 	gpio_a.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOA, &gpio_a);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
 	GPIO_InitTypeDef gpio_b;
 	gpio_b.GPIO_Mode = GPIO_Mode_AF_PP;
 	gpio_b.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
 	gpio_b.GPIO_Speed = GPIO_Speed_2MHz;
 	GPIO_Init(GPIOB, &gpio_b);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
 
 	/* timers */
 	TIM_TimeBaseInitTypeDef timer_config;
@@ -90,9 +97,6 @@ void engine_init()
 
 	TIM_Cmd(TIM3, ENABLE);
 	TIM_Cmd(TIM4, ENABLE);
-
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 }
 
 /**
@@ -100,9 +104,9 @@ void engine_init()
  */
 
 /**
- * Go forward
+ * @brief Power on engine to drive forward
  * @param time time in ms
- * @param speed max value PWM_PERIOD
+ * @param speed_value max value PWM_PERIOD
  */
 void engine_go_forward(int time_ms, int speed_value)
 {
@@ -111,23 +115,33 @@ void engine_go_forward(int time_ms, int speed_value)
 	TIM4->CCR1 = ENGINE_SPEED(speed_value);
 	TIM4->CCR3 = ENGINE_SPEED(speed_value);
 
-	delay(time_ms);
+	led_delay(time_ms);
 
 	engine_stop();
 }
 
+
+/**
+ * @brief Power on engine to drive backward
+ * @param time time in ms
+ * @param speed_value max value PWM_PERIOD
+ */
 void engine_go_backward(int time_ms, int speed_value)
 {
 	TIM3->CCR2 = ENGINE_SPEED(speed_value);
 	TIM3->CCR4 = ENGINE_SPEED(speed_value);
 	TIM4->CCR2 = ENGINE_SPEED(speed_value);
 	TIM4->CCR4 = ENGINE_SPEED(speed_value);
-
-	delay(time_ms);
+	led_delay(time_ms);
 
 	engine_stop();
 }
 
+
+/**
+ * @brief Power on engine to drive forward while command engine_stop not be executed
+ * @param speed_value max value PWM_PERIOD
+ */
 void engine_go_forward_continuously(int speed_value)
 {
 	TIM3->CCR1 = ENGINE_SPEED(speed_value);
@@ -136,6 +150,9 @@ void engine_go_forward_continuously(int speed_value)
 	TIM4->CCR3 = ENGINE_SPEED(speed_value);
 }
 
+/**
+ * @brief Stop all engines
+ */
 void engine_stop()
 {
 	TIM3->CCR1 = ENGINE_STOP;
@@ -149,23 +166,59 @@ void engine_stop()
 	TIM4->CCR4 = ENGINE_STOP;
 }
 
-
+/**
+ * @brief Turn right (direction: forward)
+ */
 void engine_turn_right_forward(int angle)
 {
+	TIM3->CCR2 = ENGINE_SPEED(100);
+	TIM4->CCR4 = ENGINE_SPEED(100);
 
+	TIM3->CCR3 = ENGINE_SPEED(100);
+	TIM4->CCR1 = ENGINE_SPEED(100);
+	led_delay(angle);
+	engine_stop();
 }
 
+/**
+ * @brief Turn left (direction: forward)
+ */
 void engine_turn_left_forward(int angle)
 {
+	TIM3->CCR4 = ENGINE_SPEED(100);
+	TIM4->CCR2 = ENGINE_SPEED(100);
 
+	TIM3->CCR1 = ENGINE_SPEED(100);
+	TIM4->CCR3 = ENGINE_SPEED(100);
+	led_delay(angle);
+	engine_stop();
 }
 
+
+/**
+ * @brief Turn right (direction: backward)
+ */
 void engine_turn_right_backward(int angle)
 {
+	TIM3->CCR4 = ENGINE_SPEED(100);
+	TIM4->CCR2 = ENGINE_SPEED(100);
 
+	TIM3->CCR1 = ENGINE_SPEED(100);
+	TIM4->CCR3 = ENGINE_SPEED(100);
+	led_delay(angle);
+	engine_stop();
 }
 
+/**
+ * @brief Turn left (direction: backward)
+ */
 void engine_turn_left_backward(int angle)
 {
+	TIM3->CCR2 = ENGINE_SPEED(100);
+	TIM4->CCR4 = ENGINE_SPEED(100);
 
+	TIM3->CCR3 = ENGINE_SPEED(100);
+	TIM4->CCR1 = ENGINE_SPEED(100);
+	led_delay(angle);
+	engine_stop();
 }

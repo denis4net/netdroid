@@ -2,7 +2,16 @@
 #include "uart.h"
 #include "servoctl.h"
 #include "cmd.h"
-#include "test.h"
+
+/**
+ * @file cmd.c
+ * @author Denis Vashchuk
+ *
+ * Command handlers implemented here.
+ * @func cmd_help cmd_go_forward cmd_go_backward cmd_engines_stop cmd_turn_right cmd_turn_left
+ * @param command null terminated string which contains command
+ * @return command execution status
+ */
 
 extern int get_args(const char* text, int count, ...);
 static cmd_status_t cmd_help(const char* );
@@ -12,38 +21,27 @@ static cmd_status_t cmd_turn_right(const char*);
 static cmd_status_t cmd_turn_left(const char*);
 static cmd_status_t cmd_go_forward_continuously(const char*);
 static cmd_status_t cmd_engines_stop(const char*);
-static cmd_status_t cmd_test(const char*);
 
-cmd_t commands[] = {
-		{ "help", "show help message", cmd_help },
-		{"go_forward", "<time (ms)> <speed 0..100>", cmd_go_forward },
-		{"go_backward", "<time (ms)> <speed 0..100>", cmd_go_backward },
-		{"go_cont", "<speed 0..100>", cmd_go_forward_continuously },
-		{"engines_stop", "stop all engines", cmd_engines_stop },
-		{"turn_right", "<angle> <dir 0|1>", cmd_turn_right },
-		{"turn_left", "<angle> <dir 0|1>", cmd_turn_left },
-		{"test", "<time ms>", cmd_test}
-};
+static cmd_t commands[] = {
+		{.name="help", .arguments="show help message\0", .function=cmd_help },
+		{.name="go_forward", .arguments="<time (ms)> <speed 0..100>\0", .function=cmd_go_forward },
+		{.name="go_backward", .arguments="<time (ms)> <speed 0..100>\0", .function=cmd_go_backward },
+		{.name="go_cont", .arguments="<speed 0..100>\0", .function=cmd_go_forward_continuously },
+		{.name="engines_stop", .arguments="stop all engines\0", .function=cmd_engines_stop },
+		{.name="turn_right", .arguments="<angle> <dir 0|1>\0", .function=cmd_turn_right },
+		{.name="turn_left", .arguments="<angle> <dir 0|1>\0", .function=cmd_turn_left },
+}; //*< available commands array, see cmd_t type definition
 
 #define COMMAND_SIZE sizeof(commands)/sizeof(cmd_t)
 
-/**
- * @brief cmd function implementation example
-static cmd_status_t cmd_stub(const char* command)
-{
-	return CMD_SUCCESSFUL;
-}
-
-*/
-
 static cmd_status_t cmd_help(const char* command)
 {
-	usart_send_str("\r\n\r\nWebDroid available commands:\n\r");
+	usart_send_str("\r\n\r\nNeuraxis available commands:\n\r");
 	for(int i=0; i<COMMAND_SIZE; i++)
 	{
 		usart_send_str(commands[i].name);
-		usart_send_str("\t\t\t");
-		usart_send_str(commands[i].description);
+		usart_send_str("\t\t\t\t");
+		usart_send_str(commands[i].arguments);
 		usart_send_str("\n\r");
 	}
 
@@ -54,8 +52,10 @@ static cmd_status_t cmd_help(const char* command)
 cmd_status_t cmd_go_forward(const char* command )
 {
 	int speed, time;
-	char cmd[16];
 	get_args(command,  2, &time, &speed);
+	if(speed > 100 || speed < 0 )
+		return CMD_ERROR;
+
 	engine_go_forward(time, speed);
 	return CMD_SUCCESSFUL;
 }
@@ -63,16 +63,20 @@ cmd_status_t cmd_go_forward(const char* command )
 cmd_status_t cmd_go_backward(const char*command )
 {
 	int speed, time;
-	char cmd[16];
 	get_args(command,  2, &time, &speed);
+	if(speed > 100 || speed < 0 )
+			return CMD_ERROR;
+
 	engine_go_backward(time, speed);
 	return CMD_SUCCESSFUL;
 }
 
 static cmd_status_t cmd_go_forward_continuously(const char* command) {
 	int speed;
-	char cmd[16];
 	get_args(command,  1, &speed);
+	if(speed > 100 || speed < 0 )
+			return CMD_ERROR;
+
 	engine_go_forward_continuously(speed);
 	return CMD_SUCCESSFUL;
 
@@ -84,10 +88,9 @@ static cmd_status_t cmd_engines_stop(const char* command)
 	return CMD_SUCCESSFUL;
 }
 
-cmd_status_t cmd_turn_right(const char* command)
+static cmd_status_t cmd_turn_right(const char* command)
 {
 	int angle, dir;
-	char cmd[16];
 	get_args(command,  2, &angle, &dir);
 
 	if(dir) {
@@ -100,10 +103,9 @@ cmd_status_t cmd_turn_right(const char* command)
 	return CMD_SUCCESSFUL;
 }
 
-cmd_status_t cmd_turn_left(const char* command)
+static cmd_status_t cmd_turn_left(const char* command)
 {
 	int angle, dir;
-	char cmd[16];
 	get_args(command,  2, &angle, &dir);
 
 	if(dir) {
@@ -116,18 +118,11 @@ cmd_status_t cmd_turn_left(const char* command)
 	return CMD_SUCCESSFUL;
 }
 
-static cmd_status_t cmd_test(const char* command) {
-	int speed;
-	char cmd[16];
-	get_args(command,  1, &speed);
-	test(speed);
-	return CMD_SUCCESSFUL;
-}
 
-static int _cmd_cmp(const char* full_command, const char* command_name)
+static int cmd_cmp(const char* full_command, const char* command_name)
 {
 	int i;
-	for(i=0; command_name[i]!=0 && full_command[i]!=' '; i++)
+	for(i=0; command_name[i] !='\0' && full_command[i]!=' '; i++)
 	{
 		if(full_command[i]-command_name[i]!=0)
 			return full_command[i]-command_name[i];
@@ -145,7 +140,7 @@ static int _cmd_cmp(const char* full_command, const char* command_name)
 cmd_status_t cmd_run(const char* command)
 {
 	for(int i=0; i<COMMAND_SIZE; i++) {
-		if ( !_cmd_cmp( command, commands[i].name))
+		if ( !cmd_cmp( command, commands[i].name))
 			return commands[i].function(command);
 	}
 	return CMD_UNDEFINED;
@@ -158,7 +153,7 @@ cmd_status_t cmd_run(const char* command)
 int cmd_check(const char* command)
 {
 	for(int i=0; i<COMMAND_SIZE; i++) {
-		if ( !_cmd_cmp(command, commands[i].name))
+		if ( !cmd_cmp(command, commands[i].name))
 			return 1;
 	}	
 	return 0;

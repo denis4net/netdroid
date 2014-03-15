@@ -13,7 +13,7 @@ extern void delay(int);
  * Init GPIOA on GPIO_Pin_15
  */
 void led_init() {
-
+#if 1
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
@@ -24,8 +24,9 @@ void led_init() {
 	gpio.GPIO_Mode = GPIO_Mode_Out_PP;
 	gpio.GPIO_Pin = GPIO_Pin_15;
 	gpio.GPIO_Speed = GPIO_Speed_2MHz;
-	GPIO_Init(GPIOA, &gpio);
 
+	GPIO_Init(GPIOA, &gpio);
+#endif
 }
 
 /**

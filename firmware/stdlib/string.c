@@ -18,6 +18,7 @@ int get_args(const char* text, int count, ...)
 		for(; text[i]!=0 && text[i] >= '0' && text[i] <= '9'; i++);
 		int* p_arg = va_arg(alist, int*);
 		*p_arg = atoi(text+soff);
+
 		/* bias index i to next char - next argument */
 		i++;
 	}

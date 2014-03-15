@@ -22,12 +22,12 @@ int queue_enqueue(queue_t *q, const char* element)
 
 char* queue_dequeue(queue_t *q)
 {
-        if (q->count <= 0) 
+	if (q->count <= 0)
 		return NULL;
 	else {
                char* x = q->q[ q->first ];
                 q->first = (q->first+1) % QUEUESIZE;
-                q->count = q->count - 1;
+                q->count--;
 		return x;
 	}
 }
