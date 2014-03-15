@@ -1,6 +1,6 @@
-TOOLS_PATH:=/home/denis/dev/arm/arm-2010q1/bin
+TOOLS_PATH:=/mnt/laptop-home/dev/arm/toolchains/gcc-arm-none-eabi-4_6-2012q4/bin
 
-TARGET:=netdroid
+TARGET := neuraxis
 
 DEFINES += STM32F10X_MD
 DEFINES += USE_SRDPERIPH_DRIVER

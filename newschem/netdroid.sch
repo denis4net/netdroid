@@ -37,7 +37,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "WebDroid  Neuraxis"
-Date "26 nov 2013"
+Date "15 dec 2013"
 Rev ""
 Comp "BSUIR 2013"
 Comment1 "Designed by Denis Vashchuk, Alex Lapuka"
@@ -1089,17 +1089,6 @@ F 3 "" H 700 4700 60  0000 C CNN
 	1    700  4700
 	1    0    0    -1  
 $EndComp
-$Comp
-L VDD #PWR22
-U 1 1 52665974
-P 3400 3150
-F 0 "#PWR22" H 3400 3250 30  0001 C CNN
-F 1 "VDD" H 3400 3260 30  0000 C CNN
-F 2 "" H 3400 3150 60  0000 C CNN
-F 3 "" H 3400 3150 60  0000 C CNN
-	1    3400 3150
-	0    -1   1    0   
-$EndComp
 Connection ~ 2300 5750
 $Comp
 L +12V #PWR57
@@ -1700,5 +1689,16 @@ F 2 "" H 1950 2000 60  0000 C CNN
 F 3 "" H 1950 2000 60  0000 C CNN
 	1    1950 2000
 	0    1    1    0   
+$EndComp
+$Comp
+L VSS #PWR?
+U 1 1 52AE0193
+P 3400 3150
+F 0 "#PWR?" H 3400 3150 30  0001 C CNN
+F 1 "VSS" H 3400 3080 30  0000 C CNN
+F 2 "" H 3400 3150 60  0000 C CNN
+F 3 "" H 3400 3150 60  0000 C CNN
+	1    3400 3150
+	1    0    0    -1  
 $EndComp
 $EndSCHEMATC
